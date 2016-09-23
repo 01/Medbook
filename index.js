@@ -520,8 +520,37 @@ function CheckPatientInfo(intent, session, callback){
 }
 
 //CHECK PATIENT STATUS
-function CheckPatientStatus(intent, session, callback){
+function CheckPatientCondition(intent, session, callback){
+    let patientId = intent.slots.PatientCondition;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
 
+    if(patientId){
+        let idKey = patientId.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patienta/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patient = response.body;
+                speechOutput = `${patient.name} condition is ${patient.condition}`;
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state the correct patient's id number." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
 }
 
 
@@ -630,8 +659,8 @@ function onIntent(intentRequest, session, callback) {
         TotalNumberOfPatients(intent, session, callback);
     }
 
-    else if(intentName === 'CheckPatientStatus') {
-        CheckPatientStatus(intent, session, callback);
+    else if(intentName === 'CheckPatientCondition') {
+        CheckPatientCondition(intent, session, callback);
     }
     else if(intentName === 'CheckPatientInfo'){
         CheckPatientInfo(intent, session, callback);

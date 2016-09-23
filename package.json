@@ -1,0 +1,23 @@
+{
+  "name": "medcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VietAnhh/Medbook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VietAnhh/Medbook/issues"
+  },
+  "homepage": "https://github.com/VietAnhh/Medbook#readme",
+  "dependencies": {
+    "firebase": "^3.4.0",
+    "request": "^2.75.0"
+  }
+}
