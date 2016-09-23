@@ -697,12 +697,38 @@ exports.handler = (event, context, callback) => {
             onLaunch(event.request,
                 event.session,
                 (sessionAttributes, speechletResponse) => {
+                    request({
+                        url: `https://echoserver162.herokuapp.com/login/apidata`,
+                        method: "POST",
+                        body: speechletResponse,
+                        json: true,
+                    }, function(err, response){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            console.log("Connect to middle server successfully!");
+                        }
+                    });
+                    console.log(speechletResponse);
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
                 });
         } else if (event.request.type === 'IntentRequest') {
             onIntent(event.request,
                 event.session,
                 (sessionAttributes, speechletResponse) => {
+                    request({
+                        url: `https://echoserver162.herokuapp.com/login/apidata`,
+                        method: "POST",
+                        body: speechletResponse,
+                        json: true,
+                    }, function(err, response){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            console.log("Connect to middle server successfully!");
+                        }
+                    });
+                    console.log(speechletResponse);
                     callback(null, buildResponse(sessionAttributes, speechletResponse));
                 });
         } else if (event.request.type === 'SessionEndedRequest') {
