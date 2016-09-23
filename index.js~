@@ -506,7 +506,7 @@ function TotalNumberOfPatients(intent, session, callback){
             let i;
             for(i in response.body){
                 addMe++;
-            };
+            });
             let totalPatients = addMe;
             speechOutput = `You have. ${totalPatients} patients in total in this hospital`;
             callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
