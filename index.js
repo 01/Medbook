@@ -778,6 +778,18 @@ function onIntent(intentRequest, session, callback) {
     else if(intentName === 'EmployeeClockIn') {
         EmployeeClockIn(intent, session, callback);
     }
+    else if(intentName === 'getPatientAge'){
+        getPatientAge(intent, session, callback);
+    }
+    else if(intentName === 'getPatientBloodType'){
+        getPatientBloodType(intent, session, callback);
+    }
+    else if(intentName === 'getPatientCondition'){
+        getPatientCondition(intent, session, callback);
+    }
+    else if(intentName === 'getPatientRoom'){
+        getPatientRoom(intent, session, callback);
+    }
     //EMPLOYEES CHECK IN
     else if(intentName === 'EmployeeClockOut') {
         EmployeeClockOut(intent, session, callback);
