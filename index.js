@@ -1,4 +1,3 @@
-
 //REFER TO THIS AS A GUIDE SECTION
 //1. HELPER'S FUNCTION
 //2. USER'S EXPERIENCE
@@ -11,23 +10,101 @@ var http = require('http');
 var firebase = require('firebase');
 var request = require('request');
 
+//---------------------------------------------Test Data ------------------------------------------------------------//
+//---------------------------------------------Begining-------------------------------------------------------------//
 let EmployeeList = [
     {
-        medId: 9283,
-        name: "Doctor Le"
-    },
-    {
-        medId: 3234,
-        name: "Doctor mcDreamy"
-    },
-    {
-        medId: 5821,
-        name: "Doctor Shepherd"
+
     }
 ];
 
+//---------------------------------------------Test Data ------------------------------------------------------------//
+//---------------------------------------------END-------------------------------------------------------------//
+
+
+
+
+//-----------------------------------Obeject/Prototype Definitions------------------------------------------------//
+//-----------------------------------Beggining -------------------------------------------------------------------//
+
+function employee(medID, name){
+    this.medID = medID;
+    this.name = name;
+}
+function dob (month, day, year){
+    this.month = month;
+    this.day = day;
+    this.year = year;
+}
+
+function address(street, city, state, zip){
+    this.street = street;
+    this.city = city;
+    this.state = state;
+    this.zip=zip;
+}
+
+function patient_(firstName, lastName, age, sex, dob, address, phoneNumber) {
+    this.firstName = firstName;
+    this.lastnName = lastName;
+    this.age = age;
+    this.sex = sex;
+    this.dob = dob
+    this.address = address;
+    this.phoneNumber = phoneNumber;
+
+}
+
+function allergies () {
+    []
+}
+
+function medications(){
+    []
+}
+function existingConditions () {
+    []
+}
+function patient_report(patient, weight, height, isSmokes, isdrinksAlcohol, isPregnant ){
+    this.patient = patient;
+    this.weight = weight;
+    this.height = height;
+    this.medications= new medications();
+    this.allergies = new allergies();
+    this.existingConditions = new existingConditions();
+}
+
+function addEmployee(EmployeeList, employee){
+    EmployeeList.push(employee)
+}
+
+//-----------------------------------Obeject/Prototype Definitions------------------------------------------------//
+//-----------------------------------------End-------------------------------------------------------------------//
+
+//--------------------------------------NonAlex Helpers------------------------------------------------------------//
+//-------------------------------------Begining -------------------------------------------------------------------//
+
+function addAllergy (patientReport, allergy){
+    patientReport.allergies.push(allergy)
+}
+
+function addMedication(patientReport, medication){
+    patientReport.medications.push(medication)
+}
+
+function addExistingCondition(patientReport, condition){
+    patientReport.existingConditions.push(condition)
+}
+
+
+
+
+
 // --------------------------------     HELPER'S FUNCTION---------------------------------------------------------//
 // ------------------------------------------------BEGINNING ------------------------------------------------------//
+
+
+
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
@@ -698,7 +775,7 @@ exports.handler = (event, context, callback) => {
                 event.session,
                 (sessionAttributes, speechletResponse) => {
                     request({
-                        url: `https://echoserver162.herokuapp.com/login/apidata`,
+                        url: `https://echoserver162.herokuapp.com/echo/apidata`,
                         method: "POST",
                         body: speechletResponse,
                         json: true,
@@ -717,7 +794,7 @@ exports.handler = (event, context, callback) => {
                 event.session,
                 (sessionAttributes, speechletResponse) => {
                     request({
-                        url: `https://echoserver162.herokuapp.com/login/apidata`,
+                        url: `https://echoserver162.herokuapp.com/echo/apidata`,
                         method: "POST",
                         body: speechletResponse,
                         json: true,
@@ -743,4 +820,3 @@ exports.handler = (event, context, callback) => {
 
 // ------------------------------------------------Main handler ------------------------------------------------------//
 // ------------------------------------------------ENDING ------------------------------------------------------//
-
