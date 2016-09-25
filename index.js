@@ -1123,21 +1123,48 @@ function PageCodeBlack(intent, session, callback){
 //                                                              //
 
 //PAGE DOCTOR
-function PageDoctor(intent, session, callback){
+function PageDoctor(intent, session, callback) {
     let doctorName = intent.slots.DoctorName;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
     let speechOutput = '';
 
-    if(doctorName){
-        let docName = doctorName.value;
-        speechOutput = `${docName} has been paged`;
+    if (doctorName) {
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/hospital.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function (err, response) {
+            if (err) {
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            } else {
+                let onDuty = response.body.hospital.On_Duty;
+                var i;
+                var isOnDuty = false;
+                for (i = 0; i < onDuty.length; i++) {
+                    if (onDuty[i] === doctorName) {
+                        isOnDuty = true;
+                        break;
+                    }
+                }
+                if (isOnDuty) {
+                    speechOutput = (doctorName + " has been paged");
+                }
+                else {
+                    speechOutput = (doctorName + " is not on Duty");
+                }
+            }
+        });
         callback(sessionAttributes, buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-    }else{
-        speechOutput = `Please Say a Doctor Name after the command`;
-        callback(sessionAttributes, buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-
+    }
+    else {
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
     }
 }
 
@@ -1287,17 +1314,17 @@ function onIntent(intentRequest, session, callback) {
         EmployeeTotalHour(intent, session, callback);
     }
     //EMPLOYEES Total SURGERY
-    else if(intentName === 'EmployeeTotalSurgeryLogged') {
-        EmployeeTotalSurgeryLogged(intent, session, callback);
-    }
+
     //EMPLOYEES TOTAL HOUR
     else if(intentName === 'EmployeeTotalRounds') {
         EmployeeTotalRounds(intent, session, callback);
     }
     else if(intentName === 'ListPatientMedications') {
-        listPatientMedications(intent, session, callback);
+        ListPatientMedications(intent, session, callback);
     }
-
+    else if(intentName === 'ListPatientAllergies'){
+        ListPatientAllergies(intent, session, callback);
+    }
 
     else if(intentName === 'ListPatientVitals'){
         ListPatientVitals(intent, session, callback);
@@ -1346,12 +1373,6 @@ function onIntent(intentRequest, session, callback) {
         TotalNumberOfPatients(intent, session, callback);
     }
 
-    else if(intentName === 'CheckPatientStatus') {
-        CheckPatientStatus(intent, session, callback);
-    }
-    else if(intentName === 'CheckPatientInfo'){
-        CheckPatientInfo(intent, session, callback);
-    }
 
     //                         INFORMATION                          //
 
