@@ -960,7 +960,7 @@ function ListPatientHistoryLimit(intent, session, callback){
     }
 }
 function getPatientAge(intent, session, callback){
-    let patientID = intent.slots.patientID;
+    let patientID = intent.slots.patientIDAge;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
