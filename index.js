@@ -561,6 +561,81 @@ function getPatientRoom(intent, session, callback){
     }
 }
 
+function listPatientMedications(intent, session, callback){
+    let patientID = intent.slots.patientID;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
+
+    if(patientID){
+        let idKey = patientID.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patientMedications = response.body.patient_medications;
+                var i;
+                speechOutput = ("The patient is currently taking " + patientMedications[0].commonBrandName);
+                for(i=1; i<patientMedications.length; i++){
+                    speechOutput = speechOutput.concat(" and " +patientMedications[i].commonBrandName)
+                }
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
+}
+
+function listPatientAllergies(intent, session, callback){
+    let patientID = intent.slots.patientID;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
+
+    if(patientID){
+        let idKey = patientID.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patientMedications = response.body.allergies;
+                var i;
+                speechOutput = ("The patient is allergic to " + patientMedications[0].name);
+                for(i=1; i<patientMedications.length; i++){
+                    speechOutput = speechOutput.concat(" and " +patientMedications[i].name)
+                }
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
+}
+
+
 function displayPatientInfo(intent, session, callback){
     let patientID = intent.slots.PatientProfileID;
     let repromptText = '';
@@ -581,12 +656,12 @@ function displayPatientInfo(intent, session, callback){
                 callback(sessionAttributes,
                     buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }else{
-                let patientProfile = response.body.;
+                let patientProfile = response.body.patient_profile;
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
                     url: `https://echoproject-c786f.firebaseio.com/patient_profile`,
-                    body: ,
+                    body: patientProfile ,
                     method: "POST",
                     json: true,
                 }, function(err, response){
@@ -596,13 +671,7 @@ function displayPatientInfo(intent, session, callback){
                         callback(sessionAttributes,
                             buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
                     }else{
-                        let patientRoom = response.body.room_number;
-                        speechOutput = `The patient's blood type is ${patientRoom}`;
-
-
-
-
-
+                        let speechOutut = "Display's Patient's Profile Now"
                         callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
                     }
                 });
@@ -714,15 +783,6 @@ function TotalNumberOfPatients(intent, session, callback){
     });
 }
 
-//PATIENT INFO
-function CheckPatientInfo(intent, session, callback){
-
-}
-
-//CHECK PATIENT STATUS
-function CheckPatientStatus(intent, session, callback){
-
-}
 
 
 //                                                              //
@@ -772,7 +832,9 @@ function onIntent(intentRequest, session, callback) {
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
         handleSessionEndRequest(callback);
     }
-
+    else if(intentName === 'DisplayPatientProfile') {
+        displayPatientInfo(intent, session, callback);
+    }
     //                                                              //
     //                         EMPLOYEES                            //
     //                                                              //
@@ -809,6 +871,10 @@ function onIntent(intentRequest, session, callback) {
     else if(intentName === 'EmployeeTotalRounds') {
         EmployeeTotalRounds(intent, session, callback);
     }
+    else if(intentName === 'ListPatientMedications') {
+        listPatientMedications(intent, session, callback);
+    }
+
 
     //                         Sugeries                             //
 
