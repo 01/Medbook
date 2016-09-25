@@ -1142,7 +1142,7 @@ function PageDoctor(intent, session, callback) {
                 callback(sessionAttributes,
                     buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             } else {
-                let onDuty = response.body.hospital.On_Duty;
+                let onDuty = response.body.Hospital.On_Duty;
                 var i;
                 var isOnDuty = false;
                 for (i = 0; i < onDuty.length; i++) {
