@@ -433,7 +433,7 @@ function getPatientCondition(intent, session, callback){
     if(patientID){
         let idKey = patientID.value;
         request({
-            url: `https://secondecho-ad19d.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
+            url: `https://secondecho-ad19d.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
             method: "GET",
             json: true,
         }, function(err, response){
@@ -467,7 +467,7 @@ function ListPatientMedications(intent, session, callback){
         if(patientID){
         let idKey = patientID.value;
         request({
-            url: `https://echoproject-c786f.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
+            url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
             method: "GET",
             json: true,
         }, function(err, response){
@@ -479,9 +479,10 @@ function ListPatientMedications(intent, session, callback){
             }else{
                 let patientMedications = response.body.patient_medications;
                 var i;
-                speechOutput = ("The patient is currently taking " + patientMedications[0].commonBrandName);
+                speechOutput = ("The patient is currently taking ".concat( patientMedications[0].commonBrandName));
                 for(i=1; i<patientMedications.length; i++){
-                    speechOutput = speechOutput.concat(" and " +patientMedications[i].commonBrandName)
+                    // speechOutput = speechOutput.concat(" and " ,patientMedications[i].commonBrandName)
+                    speechOutput += (`and ${patientMedications[i].commonBrandName}`);
                 }
                 callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
@@ -504,7 +505,7 @@ function ListPatientAllergies(intent, session, callback){
     if(patientID){
         let idKey = patientID.value;
         request({
-            url: `https://echoproject-c786f.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
+            url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
             method: "GET",
             json: true,
         }, function(err, response){
@@ -574,11 +575,6 @@ function DisplayPatientTestResults(intent, session, callback){
                     }
                 });
 
-
-
-
-
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
 
@@ -600,6 +596,8 @@ function displayPatientInfo(intent, session, callback){
 
         if(patientID){
         let idKey = patientID.value;
+
+            console.log(idKey);
         request({
             url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
             method: "GET",
@@ -611,12 +609,13 @@ function displayPatientInfo(intent, session, callback){
                 callback(sessionAttributes,
                     buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }else{
+                console.log(response);
                 let patientProfile = response.body.patient_profile;
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
                     url: `https://echoserver162.herokuapp.com/echo/patient_profile`,
-                    body: patientProfile ,
+                    body: patientProfile,
                     method: "POST",
                     json: true,
                 }, function(err, response){
@@ -631,11 +630,6 @@ function displayPatientInfo(intent, session, callback){
                     }
                 });
 
-
-
-
-
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
 
@@ -655,6 +649,7 @@ function displayPatientTimeLine(intent, session, callback){
 
     if(patientID){
         let idKey = patientID.value;
+        console.log(idKey);
         request({
             url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
             method: "GET",
@@ -686,11 +681,6 @@ function displayPatientTimeLine(intent, session, callback){
                     }
                 });
 
-
-
-
-
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
 
@@ -743,12 +733,6 @@ function displayPatientAllergies(intent, session, callback){
                         callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
                     }
                 });
-
-
-
-
-
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
 
@@ -786,7 +770,7 @@ function DisplayPatientVitals(intent, session, callback){
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
                     url: `https://echoserver162.herokuapp.com/echo/patient_vitals`,
-                    body: allergies,
+                    body: patient_vitals,
                     method: "POST",
                     json: true,
                 }, function(err, response){
@@ -801,11 +785,6 @@ function DisplayPatientVitals(intent, session, callback){
                     }
                 });
 
-
-
-
-
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
 
@@ -842,7 +821,7 @@ function displayMedications(intent, session, callback){
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
                     url: `https://echoserver162.herokuapp.com/echo/medications`,
-                    body: allergies,
+                    body: medications,
                     method: "POST",
                     json: true,
                 }, function(err, response){
@@ -858,10 +837,6 @@ function displayMedications(intent, session, callback){
                 });
 
 
-
-
-
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
 
@@ -906,8 +881,8 @@ function ListPatientVitals(intent, session, callback){
             }else{
                 let patientVitals = response.body.patient_vitals;
                 var i;
-                speechOutput = ("The patient's Blood Glucose level is: " + patientVitals.bloodGlucose.value + " " + patientVitals.bloodGlucose.units+ ", Blood Oxygen level is " + patientVitals.bloodOxygen.value + " " + patientVitals.bloodOxygen.value + ", " +
-                "Blood Pressure is " + patientVitals.bloodPressure.systolic + " over " + patientVitals.bloodPressure.diastolic + ", and Heart Rate is " + patientVitals.heartRate + " bpm") ;
+                speechOutput = ("The patient's Blood Glucose level is: " + patientVitals.bloodGlucose.value + " milligrams per dl" + ", Blood Oxygen level is " + patientVitals.bloodOxygen.value + " " + patientVitals.bloodOxygen.value + ", " +
+                "Blood Pressure is " + patientVitals.bloodPressure.systolic + " over " + patientVitals.bloodPressure.diastolic + ", and Heart Rate is " + patientVitals.heartRate.value + " beats per minute") ;
                 callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
             }
         });
