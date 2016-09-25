@@ -420,71 +420,8 @@ function EmployeeTotalRounds(intent, session, callback){
     }
 }
 
-/// Get Patient data
-function getPatientAge(intent, session, callback){
-    let patientID = intent.slots.patientID;
-    let repromptText = '';
-    let sessionAttributes = {};
-    let shouldEndSession = true;
-    let speechOutput = '';
 
-    if(patientID){
-        let idKey = patientID.value;
-        request({
-            url: `https://secondecho-ad19d.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
-            method: "GET",
-            json: true,
-        }, function(err, response){
-            if(err){
-                console.log(err);
-                speechOutput = `Something went wrong with the request`;
-                callback(sessionAttributes,
-                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-            }else{
-                let patientAge = response.body.age;
-                speechOutput = `The patient's age is ${patientAge}`;
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-            }
-        });
 
-    }else{
-        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
-        callback(sessionAttributes,
-            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-    }
-}
-function getPatientBloodType(intent, session, callback){
-    let patientID = intent.slots.patientID;
-    let repromptText = '';
-    let sessionAttributes = {};
-    let shouldEndSession = true;
-    let speechOutput = '';
-
-    if(patientID){
-        let idKey = patientID.value;
-        request({
-            url: `https://secondecho-ad19d.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
-            method: "GET",
-            json: true,
-        }, function(err, response){
-            if(err){
-                console.log(err);
-                speechOutput = `Something went wrong with the request`;
-                callback(sessionAttributes,
-                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-            }else{
-                let patientBloodType = response.body.blood_type;
-                speechOutput = `The patient's blood type is ${patientBloodType}`;
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-            }
-        });
-
-    }else{
-        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
-        callback(sessionAttributes,
-            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-    }
-}
 
 function getPatientCondition(intent, session, callback){
     let patientID = intent.slots.patientID;
@@ -519,41 +456,8 @@ function getPatientCondition(intent, session, callback){
     }
 }
 
-function getPatientRoom(intent, session, callback){
-    let patientID = intent.slots.patientID;
-    let repromptText = '';
-    let sessionAttributes = {};
-    let shouldEndSession = true;
-    let speechOutput = '';
-
-    if(patientID){
-        let idKey = patientID.value;
-        request({
-            url: `https://secondecho-ad19d.firebaseio.com/patient_report/${idKey}.json?print=pretty`,
-            method: "GET",
-            json: true,
-        }, function(err, response){
-            if(err){
-                console.log(err);
-                speechOutput = `Something went wrong with the request`;
-                callback(sessionAttributes,
-                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-            }else{
-                let patientRoom = response.body.room_number;
-                speechOutput = `The patient's blood type is ${patientRoom}`;
-                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-            }
-        });
-
-    }else{
-        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
-        callback(sessionAttributes,
-            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-    }
-}
-
-function listPatientMedications(intent, session, callback){
-    let patientID = intent.slots.patientID;
+function ListPatientMedications(intent, session, callback){
+    let patientID = intent.slots.ListMedicationID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -590,8 +494,8 @@ function listPatientMedications(intent, session, callback){
     }
 }
 
-function listPatientAllergies(intent, session, callback){
-    let patientID = intent.slots.patientID;
+function ListPatientAllergies(intent, session, callback){
+    let patientID = intent.slots.ListAllergiesID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -627,8 +531,8 @@ function listPatientAllergies(intent, session, callback){
     }
 }
 
-function displayPatientTestResults(intent, session, callback){
-    let patientID = intent.slots.PatientProfileID;
+function DisplayPatientTestResults(intent, session, callback){
+    let patientID = intent.slots.TestResultsID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -654,7 +558,7 @@ function displayPatientTestResults(intent, session, callback){
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
-                    url: `https://echoserver162.herokuapp.com/test_results`,
+                    url: `https://echoserver162.herokuapp.com/echo/test_results`,
                     body: patientProfile ,
                     method: "POST",
                     json: true,
@@ -685,7 +589,7 @@ function displayPatientTestResults(intent, session, callback){
     }
 }
 function displayPatientInfo(intent, session, callback){
-    let patientID = intent.slots.PatientProfileID;
+    let patientID = intent.slots.patientID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -711,7 +615,7 @@ function displayPatientInfo(intent, session, callback){
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
-                    url: `https://echoserver162.herokuapp.com/patient_profile`,
+                    url: `https://echoserver162.herokuapp.com/echo/patient_profile`,
                     body: patientProfile ,
                     method: "POST",
                     json: true,
@@ -742,7 +646,7 @@ function displayPatientInfo(intent, session, callback){
     }
 }
 function displayPatientTimeLine(intent, session, callback){
-    let patientID = intent.slots.PatientProfileID;
+    let patientID = intent.slots.TimeLineID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -766,7 +670,7 @@ function displayPatientTimeLine(intent, session, callback){
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
-                    url: `https://echoserver162.herokuapp.com/medical_time`,
+                    url: `https://echoserver162.herokuapp.com/echo/medical_time`,
                     body: medical_time ,
                     method: "POST",
                     json: true,
@@ -801,7 +705,7 @@ function displayPatientTimeLine(intent, session, callback){
 
 
 function displayPatientAllergies(intent, session, callback){
-    let patientID = intent.slots.PatientProfileID;
+    let patientID = intent.slots.AllergiesID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -824,7 +728,7 @@ function displayPatientAllergies(intent, session, callback){
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
-                    url: `https://echoserver162.herokuapp.com/allergies`,
+                    url: `https://echoserver162.herokuapp.com/echo/allergies`,
                     body: allergies,
                     method: "POST",
                     json: true,
@@ -857,8 +761,8 @@ function displayPatientAllergies(intent, session, callback){
 
 
 
-function displayPatientVitals(intent, session, callback){
-    let patientID = intent.slots.PatientProfileID;
+function DisplayPatientVitals(intent, session, callback){
+    let patientID = intent.slots.VitalsID;
     let repromptText = '';
     let sessionAttributes = {};
     let shouldEndSession = true;
@@ -881,7 +785,7 @@ function displayPatientVitals(intent, session, callback){
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
-                    url: `https://echoserver162.herokuapp.com/patient_vitals`,
+                    url: `https://echoserver162.herokuapp.com/echo/patient_vitals`,
                     body: allergies,
                     method: "POST",
                     json: true,
@@ -914,11 +818,11 @@ function displayPatientVitals(intent, session, callback){
 
 
 function displayMedications(intent, session, callback){
-    let patientID = intent.slots.PatientProfileID;
+    let patientID = intent.slots.MedicationsID;
     let repromptText = '';
     let sessionAttributes = {};
-    let shouldEndSession = true;
     let speechOutput = '';
+    let shouldEndSession = true;
 
     if(patientID){
         let idKey = patientID.value;
@@ -937,7 +841,7 @@ function displayMedications(intent, session, callback){
 
                 //speechOutput = `The patient's blood type is ${patientRoom}`;
                 request({
-                    url: `https://echoserver162.herokuapp.com/medications`,
+                    url: `https://echoserver162.herokuapp.com/echo/medications`,
                     body: allergies,
                     method: "POST",
                     json: true,
@@ -967,6 +871,177 @@ function displayMedications(intent, session, callback){
             buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
     }
 }
+
+
+
+
+
+//
+//
+//
+//
+//
+
+
+
+function ListPatientVitals(intent, session, callback){
+    let patientID = intent.slots.ListVitalsID;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
+
+    if(patientID){
+        let idKey = patientID.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patientVitals = response.body.patient_vitals;
+                var i;
+                speechOutput = ("The patient's Blood Glucose level is: " + patientVitals.bloodGlucose.value + " " + patientVitals.bloodGlucose.units+ ", Blood Oxygen level is " + patientVitals.bloodOxygen.value + " " + patientVitals.bloodOxygen.value + ", " +
+                "Blood Pressure is " + patientVitals.bloodPressure.systolic + " over " + patientVitals.bloodPressure.diastolic + ", and Heart Rate is " + patientVitals.heartRate + " bpm") ;
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
+}
+function getPatientAge(intent, session, callback){
+    let patientID = intent.slots.patientID;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
+
+    if(patientID){
+        let idKey = patientID.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patientAge = response.body.patient_profile.demographics.age;
+                speechOutput = `The patient's age is ${patientAge}`;
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
+}
+function getPatientBloodType(intent, session, callback){
+    let patientID = intent.slots.patientIDBlood;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
+
+    if(patientID){
+        let idKey = patientID.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patientBloodType = response.body.hospital_log.blood_type;
+                speechOutput = `The patient's blood type is ${patientBloodType}`;
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
+}
+
+
+function getPatientRoom(intent, session, callback){
+    let patientID = intent.slots.patientRoomID;
+    let repromptText = '';
+    let sessionAttributes = {};
+    let shouldEndSession = true;
+    let speechOutput = '';
+
+    if(patientID){
+        let idKey = patientID.value;
+        request({
+            url: `https://echoproject-c786f.firebaseio.com/patient_record/${idKey}.json?print=pretty`,
+            method: "GET",
+            json: true,
+        }, function(err, response){
+            if(err){
+                console.log(err);
+                speechOutput = `Something went wrong with the request`;
+                callback(sessionAttributes,
+                    buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }else{
+                let patientRoom = response.body.hospital_log.room_number;
+                speechOutput = `The patient's room number is ${patientRoom}`;
+                callback(sessionAttributes,buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+            }
+        });
+
+    }else{
+        speechOutput = `I'm sorry you either did not state your patient id or it was incorrect." + "If you have lost it please look back into your mobile app to retreive it`;
+        callback(sessionAttributes,
+            buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    }
+}
+
+
+
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
 //                                                              //
 //                         ALARMS                               //
 //                                                              //
@@ -1119,16 +1194,16 @@ function onIntent(intentRequest, session, callback) {
         displayMedications(intent, session, callback);
     }
     else if(intentName === 'DisplayPatientVitals') {
-        displayPatientVitals(intent, session, callback);
+        DisplayPatientVitals(intent, session, callback);
     }
     else if(intentName === 'DisplayPatientTestResults') {
-        displayPatientTestResults(intent, session, callback);
+        DisplayPatientTestResults(intent, session, callback);
     }
     else if(intentName === 'ListPatientMedications') {
-        listPatientMedications(intent, session, callback);
+        ListPatientMedications(intent, session, callback);
     }
     else if(intentName === 'ListPatienAllergies') {
-        listPatientAllergies(intent, session, callback);
+        ListPatientAllergies(intent, session, callback);
     }
     else if(intentName === 'GenerateFullReport'){
 
@@ -1175,6 +1250,21 @@ function onIntent(intentRequest, session, callback) {
         else if(intentName === 'ListPatientMedications') {
             listPatientMedications(intent, session, callback);
         }
+
+
+        else if(intentName === 'ListPatientVitals'){
+        ListPatientVitals(intent, session, callback);
+        }
+    else if(intentName === 'getPatientAge'){
+        getPatientAge(intent, session, callback);
+    }
+    else if(intentName === 'getPatientBloodType'){
+        getPatientBloodType(intent, session, callback);
+    }
+    else if(intentName === 'getPatientRoom'){
+        getPatientRoom(intent, session, callback);
+    }
+
 
 
         //                         Sugeries                             //
